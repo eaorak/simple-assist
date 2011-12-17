@@ -1,30 +1,25 @@
 package us.elron.sassist.osgi;
 
+import java.io.File;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import us.elron.sassist.IAssistService;
+import us.elron.sassist.service.AssistService;
+
 public class Activator implements BundleActivator {
 
-	private static BundleContext context;
+    public void start(BundleContext context) throws Exception {
+        IAssistService assistService = AssistService.initialize(this.getOsgiPath(context));
+        context.registerService(IAssistService.class.getName(), assistService, null);
+    }
 
-	static BundleContext getContext() {
-		return context;
-	}
+    public void stop(BundleContext context) throws Exception {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
-	}
+    private String getOsgiPath(BundleContext context) {
+        return context.getBundle().getLocation() + File.pathSeparator + "..";
+    }
 
 }

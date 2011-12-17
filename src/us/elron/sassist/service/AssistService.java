@@ -1,30 +1,38 @@
 package us.elron.sassist.service;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javassist.ClassPool;
+import javassist.NotFoundException;
 import us.elron.sassist.Advice;
-import us.elron.sassist.IAdviceListener;
 import us.elron.sassist.IAdviceBuilder;
+import us.elron.sassist.IAdviceListener;
 import us.elron.sassist.IAssistService;
 
 public class AssistService implements IAssistService {
 
-    private final ClassPool  pool      = ClassPool.getDefault();
-    private final Class<?>[] imports   = new Class<?>[] { Logger.class, Arrays.class };
-    private static String    LOG_LEVEL = "debug";
+    private final ClassPool      pool      = ClassPool.getDefault();
+    private final Class<?>[]     imports   = new Class<?>[] { Logger.class, Arrays.class };
+    private static String        LOG_LEVEL = "debug";
 
-    public AssistService() {
-        // final String spHome = SysProps.HOME_PATH.value();
-        // final String bundleHome = spHome + "/" + SysProps.BUNDLE_HOME_PATH.value();
-        // try {
-        // this.pool.appendClassPath(bundleHome + "/*");
-        // } catch (final NotFoundException e) {
-        // throw new RuntimeException(e);
-        // }
+    private static AssistService INSTANCE;
 
+    public static IAssistService initialize(String osgiPath) throws NotFoundException {
+        if (INSTANCE == null) {
+            synchronized (AssistService.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new AssistService(osgiPath);
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    private AssistService(String osgiPath) throws NotFoundException {
+        this.pool.appendClassPath(osgiPath + File.pathSeparator + "*");
         for (final Class<?> c : this.imports) {
             this.pool.importPackage(c.getPackage().getName());
         }
@@ -37,6 +45,7 @@ public class AssistService implements IAssistService {
 
     @Override
     public Object addLoggingTo(final IAdviceBuilder builder) throws Exception {
+        //
         final StringBuilder startAdvice = new StringBuilder();
         startAdvice.append("long start = System.currentTimeMillis();").append(IAdviceBuilder.NLT);
         startAdvice.append("try {").append(IAdviceBuilder.NLT);
@@ -71,7 +80,7 @@ public class AssistService implements IAssistService {
         body.append("}").append(IAdviceBuilder.NLT);
     }
 
-    public static String cap(String str) {
+    private static String cap(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
