@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Simple Assist
+Bundle-SymbolicName: simple-assist
+Bundle-Version: 1.0.0
+Bundle-Activator: us.elron.sassist.osgi.Activator
+Bundle-Vendor: elron.us
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .,
+ resources/lib/javassist.jar
+Export-Package: us.elron.sassist.service
