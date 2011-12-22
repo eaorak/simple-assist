@@ -4,6 +4,6 @@ import java.lang.reflect.Method;
 
 public interface IAdviceListener {
 
-    boolean addFor(Advice advice, Method m, String code);
+    boolean applyAdviceFor(Advice advice, Method m, String code);
 
 }

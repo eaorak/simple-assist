@@ -19,8 +19,8 @@ import javassist.NotFoundException;
 import javassist.bytecode.Descriptor;
 import javassist.compiler.Javac.CtFieldWithInit;
 import us.elron.sassist.Advice;
-import us.elron.sassist.IAdviceListener;
 import us.elron.sassist.IAdviceBuilder;
+import us.elron.sassist.IAdviceListener;
 
 class MethodCode {
 
@@ -29,6 +29,11 @@ class MethodCode {
 
     String complete() {
         return this.signature + this.body;
+    }
+
+    @Override
+    public String toString() {
+        return this.complete();
     }
 
 }
@@ -62,7 +67,7 @@ class AdviceInfo {
     }
 
     boolean call(final Method m) {
-        return this.listener == null ? true : this.listener.addFor(this.advice, m, this.code);
+        return this.listener == null ? true : this.listener.applyAdviceFor(this.advice, m, this.code);
     }
 
     @Override
@@ -81,9 +86,8 @@ public class AdviceBuilder implements IAdviceBuilder {
     // Around specific tags
     private static String                       AROUND_FLAG = "//#AROUND_FLAG#";
     private static String                       AROUND_USED = AROUND + " = true;";
-    // New line
-    private static String                       NL          = "\n";                                   // New line
-    private static String                       NLT         = NL + "\t";                              // New line and tab
+    //
+    private static String                       CLS_SUFFIX  = "$_";
     //
     private final ClassPool                     pool;
     private final CtClass                       ctClass;
@@ -101,7 +105,7 @@ public class AdviceBuilder implements IAdviceBuilder {
         //
         this.target = target;
         this.extend = extend;
-        this.loader = target.getClass().getClassLoader();
+        this.loader = this.getClass().getClassLoader();
         this.ctClass = this.createProxy(target.getClass(), extend);
         this.prepareProxy(target, extend);
         for (final Advice adv : Advice.values()) {
@@ -112,9 +116,9 @@ public class AdviceBuilder implements IAdviceBuilder {
     private CtClass createProxy(final Class<?> target, final boolean extend) throws Exception {
         CtClass ctTarget = null;
         if (extend) {
-            ctTarget = this.pool.makeClass(target.getName() + "$_", this.pool.get(target.getName()));
+            ctTarget = this.pool.makeClass(target.getName() + CLS_SUFFIX, this.pool.get(target.getName()));
         } else {
-            ctTarget = this.pool.makeClass(target.getName() + "$_");
+            ctTarget = this.pool.makeClass(target.getName() + CLS_SUFFIX);
         }
         return ctTarget;
     }
@@ -122,7 +126,7 @@ public class AdviceBuilder implements IAdviceBuilder {
     private void prepareProxy(final Object impl, final boolean extend) throws Exception, NotFoundException {
         this.addImport(impl.getClass());
         this.addField("private " + impl.getClass().getName() + " " + TARGET + ";");
-        this.doAddInterface(false, IAssisted.class);
+        this.doAddInterface(false, IAssisted_.class);
         this.addMethod("public void setTarget(Object target) { " + TARGET + " = (" + impl.getClass().getName() + ") target;}");
         if (extend) {
             this.addMethodsOf(impl.getClass());
@@ -200,7 +204,7 @@ public class AdviceBuilder implements IAdviceBuilder {
         }
         final Class<?> proxyClass = this.ctClass.toClass(this.loader, null);
         final Object proxy = proxyClass.newInstance();
-        ((IAssisted) proxy).setTarget(this.target);
+        ((IAssisted_) proxy).setTarget(this.target);
         return (T) proxy;
     }
 
@@ -288,7 +292,6 @@ public class AdviceBuilder implements IAdviceBuilder {
         body.append(Advice.AFTER.id()).append(NLT);
         body.append(noReturn ? "" : "return " + RESULT + ";").append("\n");
         body.append("}");
-
         //
         code.body = body.toString();
         return code;
