@@ -38,45 +38,6 @@ class MethodCode {
 
 }
 
-class AdviceInfo {
-
-    private final Advice    advice;
-    private final String    code;
-    private IAdviceListener listener;
-
-    public AdviceInfo(final Advice advice, final String code) {
-        this.advice = advice;
-        this.code = code + IAdviceBuilder.NLT + advice.id();
-    }
-
-    public Advice advice() {
-        return this.advice;
-    }
-
-    public String code() {
-        return this.code;
-    }
-
-    public AdviceInfo setListener(final IAdviceListener listener) {
-        this.listener = listener;
-        return this;
-    }
-
-    public IAdviceListener listener() {
-        return this.listener;
-    }
-
-    boolean call(final Method m) {
-        return this.listener == null ? true : this.listener.applyAdviceFor(this.advice, m, this.code);
-    }
-
-    @Override
-    public String toString() {
-        return this.advice.name() + " : " + this.code;
-    }
-
-}
-
 public class AdviceBuilder implements IAdviceBuilder {
 
     // Variable declarations
@@ -126,7 +87,7 @@ public class AdviceBuilder implements IAdviceBuilder {
     private void prepareProxy(final Object impl, final boolean extend) throws Exception, NotFoundException {
         this.addImport(impl.getClass());
         this.addField("private " + impl.getClass().getName() + " " + TARGET + ";");
-        this.doAddInterface(false, IAssisted_.class);
+        this.doAddInterface(false, _IAssisted_.class);
         this.addMethod("public void setTarget(Object target) { " + TARGET + " = (" + impl.getClass().getName() + ") target;}");
         if (extend) {
             this.addMethodsOf(impl.getClass());
@@ -204,7 +165,7 @@ public class AdviceBuilder implements IAdviceBuilder {
         }
         final Class<?> proxyClass = this.ctClass.toClass(this.loader, null);
         final Object proxy = proxyClass.newInstance();
-        ((IAssisted_) proxy).setTarget(this.target);
+        ((_IAssisted_) proxy).setTarget(this.target);
         return (T) proxy;
     }
 

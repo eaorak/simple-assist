@@ -2,8 +2,8 @@ package us.elron.sassist;
 
 public interface IAdviceBuilder {
 
-    String NL  = System.getProperty("line.seperator"); // New line
-    String NLT = NL + "\t";                           // New line and tab
+    String NL  = "\n";     // New line
+    String NLT = NL + "\t"; // New line and tab
 
     IAdviceBuilder addImport(Class<?>... classes);
 
