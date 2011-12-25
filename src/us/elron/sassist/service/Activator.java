@@ -5,6 +5,10 @@ import org.osgi.framework.BundleContext;
 
 import us.elron.sassist.IAssistService;
 
+/**
+ * @author Ender Aydin Orak
+ * @see elron.us :)
+ */
 public class Activator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {

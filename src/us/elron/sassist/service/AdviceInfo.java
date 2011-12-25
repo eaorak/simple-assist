@@ -6,6 +6,10 @@ import us.elron.sassist.Advice;
 import us.elron.sassist.IAdviceBuilder;
 import us.elron.sassist.IAdviceListener;
 
+/**
+ * @author Ender Aydin Orak
+ * @see elron.us :)
+ */
 public class AdviceInfo {
 
     private final Advice    advice;

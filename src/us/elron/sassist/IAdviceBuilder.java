@@ -1,5 +1,9 @@
 package us.elron.sassist;
 
+/**
+ * @author Ender Aydin Orak
+ * @see elron.us :)
+ */
 public interface IAdviceBuilder {
 
     String NL  = "\n";     // New line

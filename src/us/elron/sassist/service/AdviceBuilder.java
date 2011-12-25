@@ -38,6 +38,10 @@ class MethodCode {
 
 }
 
+/**
+ * @author Ender Aydin Orak
+ * @see elron.us :)
+ */
 public class AdviceBuilder implements IAdviceBuilder {
 
     // Variable declarations

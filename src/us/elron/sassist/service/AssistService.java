@@ -10,6 +10,10 @@ import javassist.NotFoundException;
 import us.elron.sassist.IAdviceBuilder;
 import us.elron.sassist.IAssistService;
 
+/**
+ * @author Ender Aydin Orak
+ * @see elron.us :)
+ */
 public class AssistService implements IAssistService {
 
     private static final String  PROP_OSGI_PATH  = "osgi.install.area";
