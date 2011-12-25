@@ -1,0 +1,8 @@
+SimpleAssist is a simple wrapper library around Javassist that simplifies bytecode manipulation operations
+in an AOP advice style.
+
+More information can be found at wiki page. Please refer to:
+
+https://github.com/eaorak/simple-assist/wiki/Simple-Assist
+http://elron.us/?p=231
+
